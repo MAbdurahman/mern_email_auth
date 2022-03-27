@@ -1,0 +1,10 @@
+{
+  "name": "mern_email_auth",
+  "version": "1.0.0",
+  "description": "MERN Stack Application",
+  "main": "server.js",
+  "repository": "https://github.com/MAbdurahman/mern_email_auth.git",
+  "author": "Mahdi Abdurrahman <mdbdrrhm@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
