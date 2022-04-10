@@ -1,5 +1,6 @@
 //**************** imports ****************//
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 
 //**************** setting up config file ****************//
@@ -13,7 +14,7 @@ if (process.env.NODE_ENV !== 'PRODUCTION') {
 	app.use(morgan('dev'));
 }
 app.use(express.json());
-
+app.use(cors()); 
 //**************** import all routes ****************//
 const userRoutes = require('./../routes/userRoutes');
 const authRoutes = require('./../routes/authRoutes');

@@ -1,14 +1,20 @@
-import React from 'react';
-import { Button, DatePicker, version } from 'antd';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import Main from './../components/main'
+import SignUp from './../components/sign_up'
+import SignIn from './../components/sign_in'
+import EmailVerify from './../components/email_verify'
 
 export default function App() {
+	const user = localStorage.getItem('token');
+
 	return (
-		<div className='center-text'>
-			<h1>antd version: {version}</h1>
-			<DatePicker />
-			<Button type='primary' style={{ marginLeft: 8 }}>
-				Primary Button
-			</Button>
-		</div>
+		<Routes>
+			{user && <Route path='/' exact element={<Main />} />}
+			<Route path='/sign-up' exact element={<SignUp />} />
+			<Route path='/sign-in' exact element={<SignIn />} />
+			<Route path='/' element={<Navigate replace to='/sign-in' />} />
+			<Route path='/users/:id/verify-user/:token' element={<EmailVerify />} />
+		</Routes>
 	);
+
 }
