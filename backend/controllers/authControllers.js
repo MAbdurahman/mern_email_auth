@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const Joi = require('joi');
 
 /*============================================================
-         ResendLink(POST) -> api/v1/auth
+         ResendLink(POST) -> api/v1/auth/resend-link 
 ===============================================================*/
 exports.resendLink = async (req, res) => {
 	try {
@@ -16,14 +16,14 @@ exports.resendLink = async (req, res) => {
 
 		const user = await User.findOne({ email: req.body.email });
 		if (!user)
-			return res.status(401).send({ message: 'Invalid Email or Password' });
+			return res.status(401).send({ message: 'Invalid Email or Password!' });
 
 		const validPassword = await bcrypt.compare(
 			req.body.password,
 			user.password
 		);
 		if (!validPassword)
-			return res.status(401).send({ message: 'Invalid Email or Password' });
+			return res.status(401).send({ message: 'Invalid Email or Password!' });
 
 		if (!user.verified) {
 			let token = await Token.findOne({ userId: user._id });
@@ -32,19 +32,20 @@ exports.resendLink = async (req, res) => {
 					userId: user._id,
 					token: crypto.randomBytes(32).toString('hex'),
 				}).save();
-				const url = `${process.env.BASE_URL}users/${user.id}/verify/${token.token}`;
+				const url = `${process.env.BASE_URL}/users/${user.id}/verify/${token.token}`;
 				await sendEmail(user.email, 'Verify Email', url);
 			}
 
 			return res
 				.status(400)
-				.send({ message: 'An Email sent to your account please verify' });
+				.send({ message: 'An Email was sent to your account.  Please verify!' });
 		}
 
 		const token = user.generateAuthToken();
-		res.status(200).send({ data: token, message: 'logged in successfully' });
+		res.status(200).send({ data: token, message: 'Signed in successfully!' });
+		
 	} catch (error) {
-		res.status(500).send({ message: 'Internal Server Error' });
+		res.status(500).send({ message: 'Internal Server Error!' });
 	}
 };
 

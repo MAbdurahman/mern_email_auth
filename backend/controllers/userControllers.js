@@ -29,11 +29,11 @@ exports.signUpUser = async (req, res) => {
 			token: crypto.randomBytes(32).toString('hex'),
 		}).save();
 
-		const url = `${process.env.BASE_URL}users/${user.id}/verify/${token.token}`;
+		const url = `${process.env.BASE_URL}/users/${user.id}/verify/${token.token}`;
 		await sendEmail(user.email, 'Verify Email', url);
 
 		res.status(201).send({
-			message: 'An Email sent to your account please verify!',
+			message: 'An Email was sent to your account.  Please verify!',
 		});
 	} catch (error) {
 		console.log(error);
@@ -59,7 +59,8 @@ exports.verifyUser = async( req, res ) => {
 		await token.remove();
 
 		res.status(200).send({ message: 'Email Verified Successfully!' });
+
 	} catch (error) {
-		res.status(500).send({ message: 'Internal Server Error' });
+		res.status(500).send({ message: 'Internal Server Error!' });
 	}
 }
