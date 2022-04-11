@@ -67,7 +67,7 @@
    color: white;
    border-radius: 5px;
    text-align: center;
-}
+} 
 
 .right {
    flex: 1;
@@ -101,6 +101,7 @@
    font-size: 14px;
    letter-spacing: 1px;
    cursor: pointer;
+   transition: background-color .6s cubic-bezier(.17, .67, .83, .67);
 }
 
 .green_btn {
@@ -109,4 +110,12 @@
    background-color: #4b8ebd;
    color: white;
    margin: 10px;
+}
+
+.green_btn:hover {
+   background-color: #0d5ba3;
+}
+
+.white_btn:hover {
+   background-color: #cccccc;
 }

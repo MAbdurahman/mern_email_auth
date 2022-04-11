@@ -14,7 +14,7 @@ export default function SignIn() {
 	const handleSubmit = async e => {
 		e.preventDefault();
 		try {
-			const url = `${process.env.REACT_APP_SERVER_URL}/api/v1/users/:id/verify-user/:token`;
+			const url = `${process.env.REACT_APP_SERVER_URL}/api/v1/auth/sign-in`;
 			const { data: res } = await axios.post(url, data);
 			localStorage.setItem('token', res.data);
 			window.location = '/';
