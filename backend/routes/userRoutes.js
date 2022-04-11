@@ -4,7 +4,7 @@ const { signUpUser, verifyUser } = require('./../controllers/userControllers');
 //**************** variables ****************//
 const router = express.Router();
 
-//**************** auth routes ****************//
+//**************** user routes ****************//
 router.route('/sign-up').post(signUpUser);
 router.route('/:id/verify-user/:token').get(verifyUser);
 

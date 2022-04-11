@@ -17,7 +17,7 @@ exports.signUpUser = async (req, res) => {
 		if (user)
 			return res
 				.status(409)
-				.send({ message: 'User with given email already Exist!' });
+				.send({ message: 'Email Already Exist!' });
 
 		const salt = await bcrypt.genSalt(Number(process.env.SALT));
 		const hashPassword = await bcrypt.hash(req.body.password, salt);
@@ -33,7 +33,7 @@ exports.signUpUser = async (req, res) => {
 		await sendEmail(user.email, 'Verify Email', url);
 
 		res.status(201).send({
-			message: 'An Email was sent to your account.  Please verify!',
+			message: 'Please verify, the email sent!'
 		});
 	} catch (error) {
 		console.log(error);

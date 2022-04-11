@@ -5,6 +5,36 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const Joi = require('joi');
 
+
+
+/*============================================================
+         SignIn(POST) -> api/v1/auth/
+===============================================================*/
+exports.signInUser = async (req, res) => {
+	try {
+		const { error } = validate(req.body);
+		if (error)
+			return res.status(400).send({ message: error.details[0].message });
+
+		const user = await User.findOne({ email: req.body.email });
+		if (!user)
+			return res.status(401).send({ message: 'Invalid Email or Password!' });
+
+		const validPassword = await bcrypt.compare(
+			req.body.password,
+			user.password
+		);
+		if (!validPassword)
+			return res.status(401).send({ message: 'Invalid Email or Password!' });
+
+		const token = user.generateAuthToken();
+		res.status(200).send({ data: token, message: 'Successfully Signed In!' });
+
+	} catch (error) {
+		res.status(500).send({ message: 'Internal Server Error!' });
+	}
+};
+
 /*============================================================
          ResendLink(POST) -> api/v1/auth/resend-link 
 ===============================================================*/
@@ -38,7 +68,7 @@ exports.resendLink = async (req, res) => {
 
 			return res
 				.status(400)
-				.send({ message: 'An Email was sent to your account.  Please verify!' });
+				.send({ message: 'Please verify, the email sent!' });
 		}
 
 		const token = user.generateAuthToken();
