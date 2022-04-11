@@ -19,7 +19,8 @@ export default function SignUp() {
 		const handleSubmit = async e => {
 			e.preventDefault();
 			try {
-				const url = 'http://localhost:5000/api/v1/users';
+				const url = `${process.env.REACT_APP_SERVER_URL}/api/v1/users/sign-up`;
+				console.log(url);
 				const { data: res } = await axios.post(url, data);
 				setMsg(res.message);
 			} catch (error) {
@@ -37,8 +38,8 @@ export default function SignUp() {
 			<div className={styles.signup_container}>
 				<div className={styles.signup_form_container}>
 					<div className={styles.left}>
-						<h1>Welcome Back</h1>
-						<Link to='/login'>
+						<h2>Welcome Back !</h2>
+						<Link to='/sign-in'>
 							<button type='button' className={styles.white_btn}>
 								Sign In
 							</button>
@@ -49,10 +50,10 @@ export default function SignUp() {
 							className={styles.form_container}
 							onSubmit={handleSubmit}
 						>
-							<h1>Create Account</h1>
+							<h2>Sign Up</h2>
 							<input
 								type='text'
-								placeholder='First and last name'
+								placeholder='Name'
 								name='fullName'
 								onChange={handleChange}
 								value={data.fullName}

@@ -14,7 +14,7 @@ export default function SignIn() {
 	const handleSubmit = async e => {
 		e.preventDefault();
 		try {
-			const url = 'http://localhost:5000/api/v1/auth';
+			const url = `${process.env.REACT_APP_SERVER_URL}/api/v1/users/:id/verify-user/:token`;
 			const { data: res } = await axios.post(url, data);
 			localStorage.setItem('token', res.data);
 			window.location = '/';
@@ -60,7 +60,7 @@ export default function SignIn() {
 					</form>
 				</div>
 				<div className={styles.right}>
-					<h1>New Here ?</h1>
+					<h2>Have not Signed Up?</h2>
 					<Link to='/sign-up'>
 						<button type='button' className={styles.white_btn}>
 							Sign Up
