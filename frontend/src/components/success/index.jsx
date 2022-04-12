@@ -12,7 +12,7 @@ export default function Success() {
 					className={styles.not_found_image}
 					alt='success_img'
 				/>
-				<h3>Email Verified Successful</h3>
+				<h3>Email Verified Successfully</h3>
 				<h4>Click button to Sign In</h4>
 				<Link to='/sign-in'>
 					<button className={styles.green_btn}>Sign In</button>

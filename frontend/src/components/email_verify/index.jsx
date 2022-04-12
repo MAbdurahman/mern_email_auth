@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import success from './../../img/check-mark.png';
-import styles from './styles.module.css';
+/* import success from './../../img/check-mark.png';
+import styles from './styles.module.css'; */
 import NotFound from './../not_found';
+import Success from './../success';
 
 export default function EmailVerify() {
 		const [validUrl, setValidUrl] = useState(true);
@@ -27,17 +28,7 @@ export default function EmailVerify() {
 		return (
 			<>
 				{validUrl ? (
-					<div className={styles.container}>
-						<img
-							src={success}
-							alt='success_img'
-							className={styles.success_img}
-						/>
-						<h1>Email Verified Successfully</h1>
-						<Link to='/sign-in'>
-							<button className={styles.green_btn}>Sign In</button>
-						</Link>
-					</div>
+					<Success />
 				) : (
 					<NotFound />
 				)}
