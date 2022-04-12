@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import NotFoundImage from './../img/not-found.svg';
+import NotFoundImage from './../../img/not-found.svg';
 import styles from './styles.module.css';
 
 export default function NotFound() {

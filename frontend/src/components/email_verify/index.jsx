@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import success from './../../img/check-mark.png';
 import styles from './styles.module.css';
-import NotFound from './../../not_found';
+import NotFound from './../not_found';
 
 export default function EmailVerify() {
 		const [validUrl, setValidUrl] = useState(true);
