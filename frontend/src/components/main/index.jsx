@@ -9,7 +9,7 @@ export default function Main() {
 	return (
 		<div className={styles.main_container}>
 			<nav className={styles.navbar}>
-				<h1>Website</h1>
+				<h1>Email Auth</h1>
 				<button className={styles.white_btn} onClick={handleSignOut}>
 					Logout
 				</button>
