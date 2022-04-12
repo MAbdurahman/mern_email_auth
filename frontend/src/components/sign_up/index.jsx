@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styles from './styles.module.css';
 
 export default function SignUp() {
@@ -12,7 +12,6 @@ export default function SignUp() {
 	});
 	const [error, setError] = useState('');
 	const [msg, setMsg] = useState('');
-	const navigate = useNavigate();
 
 	//**************** functions ****************//
 	const handleChange = ({ currentTarget: input }) => {
@@ -25,6 +24,7 @@ export default function SignUp() {
 			const url = `${process.env.REACT_APP_SERVER_URL}/api/v1/users/sign-up`;
 			const { data: res } = await axios.post(url, data);
 			setMsg(res.message);
+			
 		} catch (error) {
 			if (
 				error.response &&

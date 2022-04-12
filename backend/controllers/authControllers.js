@@ -8,7 +8,7 @@ const Joi = require('joi');
 
 
 /*============================================================
-         SignIn(POST) -> api/v1/auth/
+         SignIn(POST) -> api/v1/auth/sign-in
 ===============================================================*/
 exports.signInUser = async (req, res) => {
 	try {
@@ -62,7 +62,7 @@ exports.resendLink = async (req, res) => {
 					userId: user._id,
 					token: crypto.randomBytes(32).toString('hex'),
 				}).save();
-				const url = `${process.env.BASE_URL}/users/${user.id}/verify/${token.token}`;
+				const url = `${process.env.BASE_URL}/users/${user.id}/verify-user/${token.token}`;
 				await sendEmail(user.email, 'Verify Email', url);
 			}
 
