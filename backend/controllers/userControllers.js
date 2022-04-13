@@ -64,3 +64,7 @@ exports.verifyUser = async( req, res ) => {
 		res.status(500).send({ message: 'Internal Server Error!' });
 	}
 }
+
+/*===============================================================
+      VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
+==================================================================*/
