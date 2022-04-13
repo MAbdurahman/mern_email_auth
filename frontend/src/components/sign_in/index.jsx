@@ -25,6 +25,9 @@ export default function SignIn() {
 				error.response.status <= 500
 			) {
 				setError(error.response.data.message);
+				setTimeout(() => {
+					setError('')
+				}, 5000);
 			}
 		}
 	};

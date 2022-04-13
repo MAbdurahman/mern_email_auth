@@ -1,17 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { AppProvider } from './context/appContext'
 import './styles/index.less';
 import App from './app/App';
 
 
 ReactDOM.render(
-	<AppProvider>
+	<React.StrictMode>
 		<BrowserRouter>
 			<App />
 		</BrowserRouter>
-	</AppProvider>,
+	</React.StrictMode>,
 	document.getElementById('root')
 );
 

@@ -24,6 +24,9 @@ export default function SignUp() {
 			const url = `${process.env.REACT_APP_SERVER_URL}/api/v1/users/sign-up`;
 			const { data: res } = await axios.post(url, data);
 			setMsg(res.message);
+			setTimeout(() => {
+				setMsg('');
+			},5000)
 			
 		} catch (error) {
 			if (
@@ -32,8 +35,12 @@ export default function SignUp() {
 				error.response.status <= 500
 			) {
 				setError(error.response.data.message);
+				setTimeout(() => {
+					setError('');
+				}, 5000)
 			}
 		}
+	
 	};
 
 	return (
