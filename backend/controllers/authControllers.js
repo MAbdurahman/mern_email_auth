@@ -98,9 +98,7 @@ exports.sendPasswordLink = async (req, res) => {
 
 		let user = await User.findOne({ email: req.body.email });
 		if (!user)
-			return res
-				.status(409)
-				.send({ message: 'Email Does Not Exist!' });
+			return res.status(409).send({ message: 'Email Does Not Exist!' });
 
 		let token = await Token.findOne({ userId: user._id });
 		if (!token) {
@@ -116,6 +114,62 @@ exports.sendPasswordLink = async (req, res) => {
 		res.status(200).send({
 			message: 'Password reset link sent to your email!',
 		});
+	} catch (error) {
+		res.status(500).send({ message: 'Internal Server Error!' });
+	}
+};
+
+/*========================================================================
+   verifyPasswordLink(POST) -> api/v1/auth/:id/:token
+===========================================================================*/
+exports.verifyPasswordLink = async (req, res) => {
+	try {
+		const user = await User.findOne({ _id: req.params.id });
+		if (!user) return res.status(400).send({ message: 'Invalid Link!' });
+
+		const token = await Token.findOne({
+			userId: user._id,
+			token: req.params.token,
+		});
+		if (!token) return res.status(400).send({ message: 'Invalid Link!' });
+
+		res.status(200).send('Valid Url');
+	} catch (error) {
+		res.status(500).send({ message: 'Internal Server Error!' });
+	}
+};
+
+/*===============================================================
+   resetPassword(POST) -> api/v1/auth/:id/:token
+==================================================================*/
+exports.resetPassword = async (req, res) => {
+	try {
+		const passwordSchema = Joi.object({
+			password: passwordComplexity().required().label('Password'),
+		});
+		const { error } = passwordSchema.validate(req.body);
+		if (error)
+			return res.status(400).send({ message: error.details[0].message });
+
+		const user = await User.findOne({ _id: req.params.id });
+		if (!user) return res.status(400).send({ message: 'Invalid Link!' });
+
+		const token = await Token.findOne({
+			userId: user._id,
+			token: req.params.token,
+		});
+		if (!token) return res.status(400).send({ message: 'Invalid Link!' });
+
+		if (!user.verified) user.verified = true;
+
+		const salt = await bcrypt.genSalt(Number(process.env.SALT));
+		const hashPassword = await bcrypt.hash(req.body.password, salt);
+
+		user.password = hashPassword;
+		await user.save();
+		await token.remove();
+
+		res.status(200).send({ message: 'Password Reset Successfully!' });
 	} catch (error) {
 		res.status(500).send({ message: 'Internal Server Error!' });
 	}
