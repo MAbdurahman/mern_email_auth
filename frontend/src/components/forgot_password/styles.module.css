@@ -14,6 +14,7 @@
 
 .form_container {
    width: 400px;
+   width: 33%;
    padding: 10px;
    background-color: white;
    border-radius: 5px;
@@ -29,6 +30,7 @@
    outline: none;
    border: none;
    width: 370px;
+   width: 85%;
    padding: 15px;
    border-radius: 5px;
    background-color: #edf5f3;

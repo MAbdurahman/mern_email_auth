@@ -4,6 +4,7 @@ import SignUp from './../components/sign_up';
 import SignIn from './../components/sign_in';
 import EmailVerify from './../components/email_verify';
 import ForgotPassword from './../components/forgot_password';
+import ResetPassword from './../components/reset_password';
 
 export default function App() {
 	const user = localStorage.getItem('token');
@@ -19,6 +20,7 @@ export default function App() {
 				element={<EmailVerify />}
 			/>
 			<Route path='/forgot-password' element={<ForgotPassword />} />
+			<Route path='/reset-password/:id/:token' element={<ResetPassword />} />
 		</Routes>
 	);
 }

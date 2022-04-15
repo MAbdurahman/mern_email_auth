@@ -13,13 +13,13 @@ export default function ForgotPassword() {
 		e.preventDefault();
 		try {
 			// const url = `http://localhost:8080/api/password-reset`;
-      const url = `${process.env.REACT_APP_SERVER_URL}/api/v1/auth/send-password-link`;
+			const url = `${process.env.REACT_APP_SERVER_URL}/api/v1/auth/send-password-link`;
 			const { data } = await axios.post(url, { email });
 			setMsg(data.message);
 			setError('');
-      setTimeout(() => {
-        setMsg('')
-      }, 5000)
+			setTimeout(() => {
+				setMsg('');
+			}, 5000);
 		} catch (error) {
 			if (
 				error.response &&
@@ -28,9 +28,9 @@ export default function ForgotPassword() {
 			) {
 				setError(error.response.data.message);
 				setMsg('');
-        setTimeout(() => {
-          setError('')
-        }, 5000);
+				setTimeout(() => {
+					setError('');
+				}, 5000);
 			}
 		}
 	};

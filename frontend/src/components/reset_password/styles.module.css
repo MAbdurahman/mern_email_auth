@@ -4,10 +4,17 @@
    display: flex;
    align-items: center;
    justify-content: center;
+   background: #4b8ebd;
+   /* fallback for old browsers */
+   background: -webkit-linear-gradient(to bottom, #71a7c9, #9ac1d6);
+   /* Chrome 10-25, Safari 5.1-6 */
+   background: linear-gradient(to bottom, #71a7c9, #9ac1d6);
+   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .form_container {
    width: 400px;
+   width: 33%;
    padding: 10px;
    background-color: white;
    border-radius: 10px;
@@ -22,9 +29,11 @@
    outline: none;
    border: none;
    width: 370px;
+   width: 85%;
    padding: 15px;
    border-radius: 10px;
    background-color: #edf5f3;
+   background-color: #ccdce3;
    margin: 5px 0;
    font-size: 14px;
 }
@@ -34,6 +43,7 @@
    outline: none;
    padding: 12px 0;
    background-color: #3bb19b;
+   background-color: #4b8ebd;
    color: white;
    border-radius: 20px;
    width: 180px;
@@ -41,6 +51,11 @@
    font-size: 14px;
    cursor: pointer;
    margin: 10px auto;
+   transition: background-color .6s cubic-bezier(.17, .67, .83, .67);
+}
+
+.green_btn:hover {
+   background-color: #0d5ba3;
 }
 
 .error_msg,
@@ -50,6 +65,7 @@
    margin: 5px 0;
    font-size: 14px;
    background-color: #f34646;
+   background-color: #820014;
    color: white;
    border-radius: 5px;
    text-align: center;
@@ -57,4 +73,5 @@
 
 .success_msg {
    background-color: #5cdd5c;
+   background-color: #55821a;
 }
