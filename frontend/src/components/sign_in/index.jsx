@@ -56,6 +56,12 @@ export default function SignIn() {
 							required
 							className={styles.input}
 						/>
+						<Link
+							to='/forgot-password'
+							style={{ alignSelf: 'flex-end' }}
+						>
+							<p style={{ padding: '0 15px' }}>Forgot Password ?</p>
+						</Link>
 						{error && <div className={styles.error_msg}>{error}</div>}
 						<button type='submit' className={styles.green_btn}>
 							Sign In

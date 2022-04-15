@@ -1,0 +1,76 @@
+.container {
+   width: 100vw;
+   height: 100vh;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background: #4b8ebd;
+   /* fallback for old browsers */
+   background: -webkit-linear-gradient(to bottom, #71a7c9, #9ac1d6);
+   /* Chrome 10-25, Safari 5.1-6 */
+   background: linear-gradient(to bottom, #71a7c9, #9ac1d6);
+   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.form_container {
+   width: 400px;
+   padding: 10px;
+   background-color: white;
+   border-radius: 5px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%),
+      0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
+
+}
+
+.input {
+   outline: none;
+   border: none;
+   width: 370px;
+   padding: 15px;
+   border-radius: 5px;
+   background-color: #edf5f3;
+   background-color: #ccdce3;
+   margin: 5px 0;
+   font-size: 14px;
+}
+
+.green_btn {
+   border: none;
+   outline: none;
+   padding: 12px 0;
+   background-color: #3bb19b;
+   background-color: #4b8ebd;
+   color: white;
+   border-radius: 5px;
+   width: 180px;
+   font-weight: bold;
+   font-size: 14px;
+   cursor: pointer;
+   margin: 10px auto;
+   transition: background-color .6s cubic-bezier(.17, .67, .83, .67);
+}
+
+.green_btn:hover {
+   background-color: #0d5ba3;
+}
+
+.error_msg,
+.success_msg {
+   width: 370px;
+   padding: 15px;
+   margin: 5px 0;
+   font-size: 14px;
+   background-color: #f34646;
+   background-color: #820014;
+   color: white;
+   border-radius: 5px;
+   text-align: center;
+}
+
+.success_msg {
+   background-color: #5cdd5c;
+   background-color: #55821a;
+}
