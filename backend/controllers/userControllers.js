@@ -65,11 +65,9 @@ exports.verifyUser = async( req, res ) => {
 	}
 }
 
+
 /*===============================================================
-      VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
-==================================================================*/
-/*===============================================================
-      getAllUsers(GET) -> api/v1/users/all-users
+      getAllUsers(GET) -> api/v1/users/
 ==================================================================*/
 exports.getAllUsers = async (req, res) => {
 	const users = await User.find({});
@@ -84,14 +82,53 @@ exports.getAllUsers = async (req, res) => {
 	});
 }
 /*===============================================================
-      VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
+      createUser(POST) -> api/v1/users/
 ==================================================================*/
+exports.createUser = async (req, res) => {
+	//**************** send response ****************//
+	res.status(500).json({
+		status: 'error',
+		results: null,
+		message: 'This route has not been defined!',
+		data: {},
+	});
+}
 /*===============================================================
-      VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
+      getSingleUser(GET) -> api/v1/users/:id
 ==================================================================*/
+exports.getSingleUser = async (req, res) => {
+	//**************** send response ****************//
+	res.status(500).json({
+		status: 'error',
+		results: null,
+		message: 'This route has not been defined!',
+		data: {},
+	});
+}
 /*===============================================================
-      VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
+      updateUser(PATCH) -> api/v1/users/:id
 ==================================================================*/
+exports.updateUser = async (req, res) => {
+	//**************** send response ****************//
+	res.status(500).json({
+		status: 'error',
+		results: null,
+		message: 'This route has not been defined!',
+		data: {},
+	});
+};
+/*===============================================================
+      deleteUser(DELETE) -> api/v1/users/:id
+==================================================================*/
+exports.deleteUser = async (req, res) => {
+	//**************** send response ****************//
+	res.status(500).json({
+		status: 'error',
+		results: null,
+		message: 'This route has not been defined!',
+		data: {},
+	});
+};
 /*===============================================================
       VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
 ==================================================================*/
