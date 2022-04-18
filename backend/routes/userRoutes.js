@@ -7,7 +7,7 @@ const {
 	deleteUser,
 	signUpUser,
 	verifyUser,
-} = require('./../controllers/userControllers');
+} = require('../controllers/userController');
 
 //**************** variables ****************//
 const router = express.Router();

@@ -35,4 +35,5 @@ app.use('/api/v1/auth', authRoutes);
 
 //**************** handle errors middleware ****************//
 
+
 module.exports = app;

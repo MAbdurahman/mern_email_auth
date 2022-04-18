@@ -1,6 +1,6 @@
-const { User, validate } = require('./../models/userModel');
-const Token = require('./../models/tokenModel');
-const sendEmail = require('./../utils/sendEmail');
+const { User, validate } = require('../models/userModel');
+const Token = require('../models/tokenModel');
+const sendEmail = require('../utils/sendEmail');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 

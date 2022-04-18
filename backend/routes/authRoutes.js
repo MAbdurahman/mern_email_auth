@@ -5,7 +5,7 @@ const {
 	signInUser,
 	sendPasswordLink,
 	verifyPasswordLink,
-} = require('./../controllers/authControllers');
+} = require('../controllers/authController');
 
 //**************** variables ****************//
 const router = express.Router();
