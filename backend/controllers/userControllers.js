@@ -29,7 +29,7 @@ exports.signUpUser = async (req, res) => {
 			token: crypto.randomBytes(32).toString('hex'),
 		}).save();
 
-		const url = `${process.env.BASE_URL}/users/${user.id}/verify-user/${token.token}`;
+		const url = `${process.env.BASE_URL}/auth/${user.id}/verify-user/${token.token}`;
 		await sendEmail(user.email, 'Verify Email', url);
 
 		res.status(201).send({
@@ -65,6 +65,33 @@ exports.verifyUser = async( req, res ) => {
 	}
 }
 
+/*===============================================================
+      VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
+==================================================================*/
+/*===============================================================
+      getAllUsers(GET) -> api/v1/users/all-users
+==================================================================*/
+exports.getAllUsers = async (req, res) => {
+	const users = await User.find({});
+
+	//**************** send response ****************//
+	res.status(200).json({
+		status: 'success',
+		results: users.length,
+		data: {
+			users,
+		},
+	});
+}
+/*===============================================================
+      VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
+==================================================================*/
+/*===============================================================
+      VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
+==================================================================*/
+/*===============================================================
+      VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
+==================================================================*/
 /*===============================================================
       VerifyUser(GET) -> api/v1/users/:id/verify-user/:token
 ==================================================================*/
