@@ -2,6 +2,8 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const AppErrorHandler = require('./../utils/appErrorHandler');
+const GlobalErrorMiddleware = require('./../middlewares/globalErrorMiddleware');
 
 //**************** setting up config file ****************//
 if (process.env.NODE_ENV !== 'PRODUCTION')
@@ -18,7 +20,7 @@ app.use(cors());
 app.use((req, res, next) => {
 	req.requestTime = new Date().toISOString();
 	next();
-})
+});
 //**************** import all routes ****************//
 const userRoutes = require('./../routes/userRoutes');
 const authRoutes = require('./../routes/authRoutes');
@@ -32,8 +34,12 @@ app.get('/api/v1', (req, res) => {
 });
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/auth', authRoutes);
-
+app.all('*', (req, res, next) => {
+	next(
+		new AppErrorHandler(`Can't find ${req.originalUrl} on this server!`, 404)
+	);
+});
 //**************** handle errors middleware ****************//
-
+app.use(GlobalErrorMiddleware);
 
 module.exports = app;
