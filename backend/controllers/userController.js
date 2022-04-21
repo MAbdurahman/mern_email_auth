@@ -1,6 +1,7 @@
 const { User, validate } = require('../models/userModel');
 const Token = require('../models/tokenModel');
 const sendEmail = require('../utils/sendEmail');
+const catchAsyncHandler = require('../utils/catchAsyncHandler');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
@@ -69,7 +70,7 @@ exports.verifyUser = async( req, res ) => {
 /*===============================================================
       getAllUsers(GET) -> api/v1/users/
 ==================================================================*/
-exports.getAllUsers = async (req, res) => {
+exports.getAllUsers = catchAsyncHandler(async (req, res) => {
 	const users = await User.find({});
 
 	//**************** send response ****************//
@@ -80,7 +81,8 @@ exports.getAllUsers = async (req, res) => {
 			users,
 		},
 	});
-}
+}); 
+	
 /*===============================================================
       createUser(POST) -> api/v1/users/
 ==================================================================*/
