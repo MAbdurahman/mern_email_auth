@@ -12,6 +12,7 @@ const handleDuplicateFieldsDB = err => {
 	const message = `Duplicate field value: ${value}. Please use another value!`;
 	return new AppErrorHandler(message, 400);
 };
+
 const handleValidationErrorDB = err => {
 	const errors = Object.values(err.errors).map(el => el.message);
 
@@ -44,20 +45,19 @@ const sendErrorProd = (err, res) => {
 		// 2) Send generic message
 		res.status(500).json({
 			status: 'error',
-			message: 'Something went very wrong!',
+			message: 'Internal Server Error!',
 		});
 	}
 };
 
 module.exports = (err, req, res, next) => {
-	// console.log(err.stack);
 
 	err.statusCode = err.statusCode || 500;
 	err.status = err.status || 'error';
 
-	if (process.env.NODE_ENV === 'development') {
+	if (process.env.NODE_ENV === 'DEVELOPMENT') {
 		sendErrorDev(err, res);
-	} else if (process.env.NODE_ENV === 'production') {
+	} else if (process.env.NODE_ENV === 'PRODUCTION') {
 		let error = { ...err };
 
 		if (error.name === 'CastError') error = handleCastErrorDB(error);
