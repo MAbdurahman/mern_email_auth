@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
 		trim: true,
 		required: [true, 'First and last name is required!'],
 		minlength: [4, 'Name must be at least 4 characters!'],
-		maxLength: [32, 'Name cannot exceed 31 characters!'],
+		maxLength: [32, 'Name cannot exceed 32 characters!'],
 		match: [name_pattern, 'Enter first and last name!'],
 	},
 	email: {
