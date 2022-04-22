@@ -4,12 +4,16 @@ const sendEmail = require('../utils/sendEmail');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const Joi = require('joi');
+const jwt = require('jsonwebtoken');
 const passwordComplexity = require('joi-password-complexity');
+
+const AppErrorHandler = require('./../utils/appErrorHandler');
+const catchAsyncHandler = require('../utils/catchAsyncHandler');
 
 /*============================================================
          SignIn(POST) -> api/v1/auth/sign-in
 ===============================================================*/
-exports.signInUser = async (req, res) => {
+exports.signInUserTwo = async (req, res) => {
 	try {
 		const { error } = validate(req.body);
 		if (error)
@@ -139,12 +143,61 @@ exports.verifyPasswordLink = async (req, res) => {
 	}
 };
 
+
+
 /*===============================================================
-   resetPassword(POST) -> api/v1/auth/:id/:token
+	signUpUser(POST) -> api/v1/users/sign-up
 ==================================================================*/
+exports.signUpUser = catchAsyncHandler(async (req, res, next) => {
+	const { name, email, password } = req.body;
+
+	const newUser = await User.create({
+		name,
+		email,
+		password,
+	});
+
+	const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+		expiresIn: process.env.JWT_LIFETIME,
+	});
+	res.status(201).json({
+		status: 'Success',
+		token,
+		data: {
+			user: newUser,
+		},
+	});
+});
 /*===============================================================
-   resetPassword(POST) -> api/v1/auth/:id/:token
+   signInUser(POST) -> api/v1/users/sign-in
 ==================================================================*/
+exports.signInUser = catchAsyncHandler(async (req, res, next) => {
+	const { email, password } = req.body;
+
+	//**************** check if email and password is entered by the user ****************//
+	if (!email || !password) {
+		return next(new AppErrorHandler('Please enter email & password!', 400));
+	}
+	//**************** check if user is in database ****************//
+	const user = await User.findOne({ email }).select('+password');
+
+	if (!user) {
+		return next(new AppErrorHandler('Invalid Email or Password!', 401));
+	}
+   //**************** checks if password is correct ****************//
+	const isPasswordCorrect = await user.comparePasswords(password);
+
+	if (!isPasswordCorrect) {
+		return next(new AppErrorHandler('Invalid Email or Password', 401));
+	}
+
+	const token = user.generateJSONWebToken();
+	
+	res.status(200).json({
+		status: 'Success',
+		token
+	})
+});
 /*===============================================================
    resetPassword(POST) -> api/v1/auth/:id/:token
 ==================================================================*/

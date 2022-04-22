@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const Joi = require('joi');
 const passwordComplexity = require('joi-password-complexity');
 
@@ -47,8 +48,7 @@ const userSchema = new mongoose.Schema({
 	createdAt: {
 		type: Date,
 		default: Date.now,
-	},
-	verified: { type: Boolean, default: false },
+	}
 });
 
 userSchema.methods.generateAuthToken = function () {
@@ -57,8 +57,29 @@ userSchema.methods.generateAuthToken = function () {
 	});
 	return token;
 };
+//**************** encrypt password before saving user****************//
+userSchema.pre('save', async function (next) {
+	if (!this.isModified('password')) {
+		next();
+	}
+	this.password = await bcrypt.hash(this.password, 12);
+});
+
+//**************** compare user password ****************//
+userSchema.methods.comparePasswords = async function (enteredPassword) {
+	return await bcrypt.compare(enteredPassword, this.password);
+};
+
+//**************** generate jsonwebtoken ****************//
+userSchema.methods.generateJSONWebToken = function () {
+	return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+		expiresIn: process.env.JWT_LIFETIME,
+	});
+};
 
 const User = mongoose.model('User', userSchema);
+
+
 
 const validate = data => {
 	const schema = Joi.object({

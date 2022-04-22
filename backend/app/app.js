@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 //**************** import all routes ****************//
 const userRoutes = require('./../routes/userRoutes');
-const authRoutes = require('./../routes/authRoutes');
+/* const authRoutes = require('./../routes/authRoutes'); */
 //**************** app routes ****************//
 app.get('/api/v1', (req, res) => {
 	res.status(200).json({
@@ -33,7 +33,7 @@ app.get('/api/v1', (req, res) => {
 	});
 });
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/auth', authRoutes);
+/* app.use('/api/v1/auth', authRoutes); */
 app.all('*', (req, res, next) => {
 	next(
 		new AppErrorHandler(`Can't find ${req.originalUrl} on this server!`, 404)
