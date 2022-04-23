@@ -2,6 +2,7 @@ const User = require('./../models/userModel');
 const AppErrorHandler = require('./../utils/appErrorHandler');
 const catchAsyncHandler = require('../utils/catchAsyncHandler');
 const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
 
 /*===============================================================
       checks authentication of user
@@ -28,15 +29,15 @@ exports.isAuthenticated = catchAsyncHandler(async (req, res, next) => {
 	//**************** check if user exists ****************//
 	const currentUser = await User.findById(decoded.id);
 	if (!currentUser) {
-		return next(new AppErrorHandler('Current user does not exist!', 401));
+		return next(new AppErrorHandler('User does not exist!', 401));
 	}
 	//**************** check if user changed password ****************//
 	if (currentUser.changedPasswordAfter(decoded.iat)) {
-		return next(new AppError('Password changed! Sign in again!', 401));
+		return next(new AppErrorHandler('Password changed! Sign in again!', 401));
 	}
-
 	//**************** grant access to route ****************//
 	req.user = currentUser;
 	res.locals.user = currentUser;
 	next();
+   
 });

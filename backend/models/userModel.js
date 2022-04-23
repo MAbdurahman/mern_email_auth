@@ -76,6 +76,20 @@ userSchema.methods.generateJSONWebToken = function () {
 		expiresIn: process.env.JWT_LIFETIME,
 	});
 };
+//**************** changed password after ****************//
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+	if (this.passwordChangedAt) {
+		const changedTimestamp = parseInt(
+			this.passwordChangedAt.getTime() / 1000,
+			10
+		);
+
+		return JWTTimestamp < changedTimestamp;
+	}
+
+	//****** false means password has not changed ******//
+	return false;
+};
 
 const User = mongoose.model('User', userSchema);
 

@@ -182,13 +182,13 @@ exports.signInUser = catchAsyncHandler(async (req, res, next) => {
 	const user = await User.findOne({ email }).select('+password');
 
 	if (!user) {
-		return next(new AppErrorHandler('Invalid Email or Password!', 401));
+		return next(new AppErrorHandler('Invalid email or password!', 401));
 	}
    //**************** checks if password is correct ****************//
 	const isPasswordCorrect = await user.comparePasswords(password);
 
 	if (!isPasswordCorrect) {
-		return next(new AppErrorHandler('Invalid Email or Password', 401));
+		return next(new AppErrorHandler('Invalid email or password', 401));
 	}
 
 	const token = user.generateJSONWebToken();

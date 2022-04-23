@@ -9,9 +9,15 @@ const handleDuplicateFieldsDB = err => {
 	const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
 	console.log(value);
 
-	const message = `Duplicate field value: ${value}. Please use another value!`;
+	const message = `Duplicate field value: ${value}. Use another value!`;
 	return new AppErrorHandler(message, 400);
 };
+
+const handleJWTError = () =>
+	new AppErrorHandler('Invalid Token! Sign in again!', 401);
+
+const handleJWTExpiredError = () =>
+	new AppErrorHandler('Token has expired! Sign in again!', 401);
 
 const handleValidationErrorDB = err => {
 	const errors = Object.values(err.errors).map(el => el.message);
@@ -30,19 +36,19 @@ const sendErrorDev = (err, res) => {
 };
 
 const sendErrorProd = (err, res) => {
-	// Operational, trusted error: send message to client
+	//******* Operational, trusted error: send message to client********//
 	if (err.isOperational) {
 		res.status(err.statusCode).json({
 			status: err.status,
 			message: err.message,
 		});
 
-		// Programming or other unknown error: don't leak error details
+		//****** programming or unknown error: don't leak error details'******//
 	} else {
-		// 1) Log error
+		//**************** Log error ****************//
 		console.error('ERROR 💥', err);
 
-		// 2) Send generic message
+		//****** send a generic error message ******//
 		res.status(500).json({
 			status: 'error',
 			message: 'Internal Server Error!',
@@ -51,7 +57,6 @@ const sendErrorProd = (err, res) => {
 };
 
 module.exports = (err, req, res, next) => {
-
 	err.statusCode = err.statusCode || 500;
 	err.status = err.status || 'error';
 
@@ -64,6 +69,8 @@ module.exports = (err, req, res, next) => {
 		if (error.code === 11000) error = handleDuplicateFieldsDB(error);
 		if (error.name === 'ValidationError')
 			error = handleValidationErrorDB(error);
+		if (error.name === 'JsonWebTokenError') error = handleJWTError();
+		if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
 		sendErrorProd(error, res);
 	}

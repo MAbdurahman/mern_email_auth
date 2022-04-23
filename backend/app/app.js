@@ -34,7 +34,9 @@ app.get('/api/v1', (req, res) => {
 });
 app.use('/api/v1/users', userRoutes);
 /* app.use('/api/v1/auth', authRoutes); */
+
 app.all('*', (req, res, next) => {
+	
 	next(
 		new AppErrorHandler(`Can't find ${req.originalUrl} on this server!`, 404)
 	);
