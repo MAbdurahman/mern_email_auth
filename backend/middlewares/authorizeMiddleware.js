@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 /*===============================================================
       checks authorization of user
 ==================================================================*/
-exports.authorize = (...roles) => {
+exports.isAuthorized = (...roles) => {
 	return (req, res, next) => {
 		//**************** roles['admin', 'other']. role='user'****************//
 		if (!roles.includes(req.user.role)) {

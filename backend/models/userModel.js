@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -83,12 +84,30 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 			this.passwordChangedAt.getTime() / 1000,
 			10
 		);
-
 		return JWTTimestamp < changedTimestamp;
 	}
 
 	//****** false means password has not changed ******//
 	return false;
+};
+//**************** generate password reset token ****************//
+userSchema.methods.generatePasswordResetToken = function () {
+	//**************** generate the token ****************//
+	const resetToken = crypto.randomBytes(32).toString('hex');
+
+	//**************** hash and set to passwordResetToken ****************//
+	this.passwordResetToken = crypto
+		.createHash('sha256')
+		.update(resetToken)
+		.digest('hex');
+
+	console.log({ resetToken }, this.passwordResetToken);
+
+	//**************** set passwordResetToken to expire ****************//
+	this.passwordResetExpires = Date.now() + 30 * 60 * 1000;
+
+	//**************** return the resetToken (non encrypted token) ****************//
+	return resetToken;
 };
 
 const User = mongoose.model('User', userSchema);

@@ -38,7 +38,7 @@ app.use('/api/v1/users', userRoutes);
 app.all('*', (req, res, next) => {
 	
 	next(
-		new AppErrorHandler(`Can't find ${req.originalUrl} on this server!`, 404)
+		new AppErrorHandler(`Cannot find ${req.originalUrl} on this server!`, 404)
 	);
 });
 //**************** handle errors middleware ****************//

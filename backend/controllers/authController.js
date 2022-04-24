@@ -143,7 +143,7 @@ exports.verifyPasswordLink = async (req, res) => {
 	}
 };
 
-
+//**************** beginning of mvc-update ****************//
 
 /*===============================================================
 	signUpUser(POST) -> api/v1/users/sign-up
@@ -198,15 +198,46 @@ exports.signInUser = catchAsyncHandler(async (req, res, next) => {
 		token
 	})
 });
-/*===============================================================
-   resetPassword(POST) -> api/v1/auth/:id/:token
-==================================================================*/
-/*===============================================================
-   resetPassword(POST) -> api/v1/auth/:id/:token
-==================================================================*/
-/*===============================================================
-   resetPassword(POST) -> api/v1/auth/:id/:token
-==================================================================*/
+/*=====================================================================
+   forgotPassword(POST) -> api/v1/users/forgot-password
+========================================================================*/
+exports.forgotPassword = catchAsyncHandler (async (req, res, next) => {
+	//**************** get user based on email in database ****************//
+	const user = await User.findOne({ email: req.body.email });
+	if (!user) {
+		return next(new AppErrorHandler('User not found with this email!', 404));
+	}
+	//**************** generate random resetPasswordToken ****************//
+	const resetToken = user.generatePasswordResetToken();
+	await user.save({ validateBeforeSave: false });
+
+	//**************** send token to user's email ****************//
+		
+});
+/*========================================================================
+   resetPassword(PATCH) -> api/v1/users/reset-password/:token
+===========================================================================*/
+exports.resetPassword = catchAsyncHandler(async (req, res, next) => {
+	//**************** send response ****************//
+	res.status(500).json({
+		status: 'error',
+		results: null,
+		message: 'This route has not been defined!',
+		data: {},
+	});
+});
+/*==================================================================
+   updatePassword(PATCH) -> api/v1/users/update-my-password
+=====================================================================*/
+exports.updatePassword = catchAsyncHandler(async (req, res, next) => {
+	//**************** send response ****************//
+	res.status(500).json({
+		status: 'error',
+		results: null,
+		message: 'This route has not been defined!',
+		data: {},
+	});
+});
 /*===============================================================
    resetPassword(POST) -> api/v1/auth/:id/:token
 ==================================================================*/
