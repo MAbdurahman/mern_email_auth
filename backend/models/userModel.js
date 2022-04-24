@@ -58,6 +58,7 @@ userSchema.methods.generateAuthToken = function () {
 	});
 	return token;
 };
+
 //**************** encrypt password before saving user****************//
 userSchema.pre('save', async function (next) {
 	if (!this.isModified('password')) {
@@ -77,6 +78,7 @@ userSchema.methods.generateJSONWebToken = function () {
 		expiresIn: process.env.JWT_LIFETIME,
 	});
 };
+
 //**************** changed password after ****************//
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 	if (this.passwordChangedAt) {
@@ -90,6 +92,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 	//****** false means password has not changed ******//
 	return false;
 };
+
 //**************** generate password reset token ****************//
 userSchema.methods.generatePasswordResetToken = function () {
 	//**************** generate the token ****************//
@@ -106,7 +109,7 @@ userSchema.methods.generatePasswordResetToken = function () {
 	//**************** set passwordResetToken to expire ****************//
 	this.passwordResetExpires = Date.now() + 30 * 60 * 1000;
 
-	//**************** return the resetToken (non encrypted token) ****************//
+	//*********** return the resetToken (non encrypted token) **********//
 	return resetToken;
 };
 

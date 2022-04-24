@@ -1,5 +1,6 @@
 const { User } = require('../models/userModel');
 const Token = require('../models/tokenModel');
+const sendGmail = require('../utils/sendGmail');
 const sendEmail = require('../utils/sendEmail');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
@@ -65,7 +66,7 @@ exports.resendLink = async (req, res) => {
 					token: crypto.randomBytes(32).toString('hex'),
 				}).save();
 				const url = `${process.env.BASE_URL}/users/${user.id}/verify-user/${token.token}`;
-				await sendEmail(user.email, 'Verify Email', url);
+				await sendGmail(user.email, 'Verify Email', url);
 			}
 
 			return res
@@ -113,7 +114,7 @@ exports.sendPasswordLink = async (req, res) => {
 		}
 
 		const url = `${process.env.BASE_URL}/reset-password/${user._id}/${token.token}/`;
-		await sendEmail(user.email, 'Password Reset', url);
+		await sendGmail(user.email, 'Password Reset', url);
 
 		res.status(200).send({
 			message: 'Password reset link sent to your email!',
@@ -212,18 +213,68 @@ exports.forgotPassword = catchAsyncHandler (async (req, res, next) => {
 	await user.save({ validateBeforeSave: false });
 
 	//**************** send token to user's email ****************//
+	try {
+		const resetURL = `${req.protocol}://${req.get(
+			'host'
+		)}/api/v1/users/reset-password/${resetToken}`;
+
+		const message = `To reset your password, click the URL ${resetURL}. If you did \nnot request a password reset, please ignore this email!`;
+
+		await sendEmail({
+			email: user.email,
+			subject: 'Email Auth Password Reset',
+			message: message
+		});
+
+		res.status(200).json({
+			status: 'success',
+			message: `Email sent to ${user.email}`
+		})
+
+	} catch (error) {
+		user.resetPasswordToken = undefined;
+		user.resetPasswordExpires = undefined;
+		await user.save({ validateBeforeSave: false });
+
+		return next(new AppErrorHandler('Error sending email! Try again later.', 500));
+	}
 		
 });
 /*========================================================================
    resetPassword(PATCH) -> api/v1/users/reset-password/:token
 ===========================================================================*/
 exports.resetPassword = catchAsyncHandler(async (req, res, next) => {
+	
+	//******** get user based on the token (hash url token) ********//
+	const hashedToken = crypto
+		.createHash('sha256')
+		.update(req.params.token)
+		.digest('hex');
+
+		console.log(`hashedToken - ${hashedToken}`)
+	const user = await User.findOne({
+		passwordResetToken: hashedToken,
+		passwordResetExpires: { $gt: Date.now() },
+	});
+
+	//*** if token has not expired, and there is user, set the new password ***//
+	if (!user) {
+		return next(new AppErrorHandler('Invalid or Expired Token!', 400));
+	}
+	user.password = req.body.password;
+	user.passwordResetToken = undefined;
+	user.passwordResetExpires = undefined;
+	await user.save();
+	
+	
+	//******** update changedPasswordAt property for the user ********//
+	
+	//**************** sign in user, send JWT ****************//
+	const token = user.generateJSONWebToken();
 	//**************** send response ****************//
 	res.status(500).json({
-		status: 'error',
-		results: null,
-		message: 'This route has not been defined!',
-		data: {},
+		status: 'Success',
+		token
 	});
 });
 /*==================================================================

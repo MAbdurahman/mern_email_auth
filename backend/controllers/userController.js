@@ -1,6 +1,6 @@
 const { User, validate } = require('../models/userModel');
 const Token = require('../models/tokenModel');
-const sendEmail = require('../utils/sendEmail');
+const sendEmail = require('../utils/sendGmail');
 const AppErrorHandler = require('./../utils/appErrorHandler');
 const catchAsyncHandler = require('../utils/catchAsyncHandler');
 const bcrypt = require('bcrypt');
