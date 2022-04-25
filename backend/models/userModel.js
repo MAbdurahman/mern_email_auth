@@ -1,10 +1,10 @@
-const crypto = require('crypto');
+//**************** imports ****************//
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const Joi = require('joi');
-const passwordComplexity = require('joi-password-complexity');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
+//**************** regex patterns ****************//
 const name_pattern =
 	/^([a-zA-Z-]{2,}\s[a-zA-z]{1,}'?-?[a-zA-Z]{1,}\s?([a-zA-Z]{1,})?)$/i;
 const email_pattern =
@@ -49,15 +49,8 @@ const userSchema = new mongoose.Schema({
 	createdAt: {
 		type: Date,
 		default: Date.now,
-	}
+	},
 });
-
-userSchema.methods.generateAuthToken = function () {
-	const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
-		expiresIn: process.env.JWT_LIFETIME,
-	});
-	return token;
-};
 
 //**************** encrypt password before saving user****************//
 userSchema.pre('save', async function (next) {
@@ -79,7 +72,7 @@ userSchema.methods.generateJSONWebToken = function () {
 	});
 };
 
-//**************** changed password after ****************//
+//**************** compares passwordChangedAt ****************//
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 	if (this.passwordChangedAt) {
 		const changedTimestamp = parseInt(
@@ -104,7 +97,7 @@ userSchema.methods.generatePasswordResetToken = function () {
 		.update(resetToken)
 		.digest('hex');
 
-	console.log({ resetToken }, this.passwordResetToken);
+	console.log({ resetToken }, `passwordResetToken: ${this.passwordResetToken}`);
 
 	//**************** set passwordResetToken to expire ****************//
 	this.passwordResetExpires = Date.now() + 30 * 60 * 1000;
@@ -114,16 +107,4 @@ userSchema.methods.generatePasswordResetToken = function () {
 };
 
 const User = mongoose.model('User', userSchema);
-
-
-
-const validate = data => {
-	const schema = Joi.object({
-		name: Joi.string().required().label('Name'),
-		email: Joi.string().email().required().label('Email'),
-		password: passwordComplexity().required().label('Password'),
-	});
-	return schema.validate(data);
-};
-
-module.exports = { User, validate };
+module.exports = User;
