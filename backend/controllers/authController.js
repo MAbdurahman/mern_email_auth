@@ -21,6 +21,8 @@ exports.signUpUser = catchAsyncHandler(async (req, res, next) => {
 	const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
 		expiresIn: process.env.JWT_LIFETIME,
 	});
+
+
 	res.status(201).json({
 		status: 'Success',
 		token,
@@ -35,7 +37,7 @@ exports.signUpUser = catchAsyncHandler(async (req, res, next) => {
 exports.signInUser = catchAsyncHandler(async (req, res, next) => {
 	const { email, password } = req.body;
 
-	//**************** check if email and password is entered by the user ****************//
+	//********** check if email and password is entered by the user **********//
 	if (!email || !password) {
 		return next(new AppErrorHandler('Please enter email & password!', 400));
 	}
@@ -87,7 +89,7 @@ exports.forgotPassword = catchAsyncHandler (async (req, res, next) => {
 		});
 
 		res.status(200).json({
-			status: 'success',
+			status: 'Success',
 			message: `Email sent to ${user.email}`
 		})
 
@@ -123,17 +125,17 @@ exports.resetPassword = catchAsyncHandler(async (req, res, next) => {
 	user.password = req.body.password;
 	user.passwordResetToken = undefined;
 	user.passwordResetExpires = undefined;
-	
+
 	await user.save();
 
 	//******** update changedPasswordAt property for the user ********//
 
 	//**************** sign in user, send JWT ****************//
-	const jwtToken = user.generateJSONWebToken();
+	const token = user.generateJSONWebToken();
 	//**************** send response ****************//
 	res.status(200).json({
 		status: 'Success',
-		token: jwtToken,
+		token
 	});
 });
 
@@ -179,35 +181,3 @@ exports.updatePassword = catchAsyncHandler(async (req, res, next) => {
 /*===============================================================
    resetPassword(POST) -> api/v1/auth/:id/:token
 ==================================================================*/
-exports.resetPassword = async (req, res) => {
-	try {
-		const passwordSchema = Joi.object({
-			password: passwordComplexity().required().label('Password'),
-		});
-		const { error } = passwordSchema.validate(req.body);
-		if (error)
-			return res.status(400).send({ message: error.details[0].message });
-
-		const user = await User.findOne({ _id: req.params.id });
-		if (!user) return res.status(400).send({ message: 'Invalid Link!' });
-
-		const token = await Token.findOne({
-			userId: user._id,
-			token: req.params.token,
-		});
-		if (!token) return res.status(400).send({ message: 'Invalid Link!' });
-
-		if (!user.verified) user.verified = true;
-
-		const salt = await bcrypt.genSalt(Number(process.env.SALT));
-		const hashPassword = await bcrypt.hash(req.body.password, salt);
-
-		user.password = hashPassword;
-		await user.save();
-		await token.remove();
-
-		res.status(200).send({ message: 'Password Reset Successfully!' });
-	} catch (error) {
-		res.status(500).send({ message: 'Internal Server Error!' });
-	}
-};
