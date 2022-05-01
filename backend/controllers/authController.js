@@ -1,7 +1,6 @@
 const User = require('../models/userModel');
 const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
-// const jwt = require('jsonwebtoken');
 const AppErrorHandler = require('./../utils/appErrorHandler');
 const catchAsyncHandler = require('../utils/catchAsyncHandler');
 

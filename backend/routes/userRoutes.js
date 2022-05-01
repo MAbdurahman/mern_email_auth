@@ -5,6 +5,8 @@ const {
 	getSingleUser,
 	updateUser,
 	deleteUser,
+	updateMyProfile,
+	deleteMyProfile
 } = require('../controllers/userController');
 const {
 	signInUser,
@@ -28,6 +30,10 @@ router.route('/forgot-password').post(forgotPassword);
 router.route('/reset-password/:token').patch(resetPassword);
 router.route('/update-my-password').patch(isAuthenticatedUser, updatePassword);
 //**************** user routes ****************//
+router.route('/update-my-profile').patch(isAuthenticatedUser, updateMyProfile);
+router.route('/delete-my-profile').delete(isAuthenticatedUser, deleteMyProfile);
+
+
 router.route('/').get(getAllUsers).post(createUser);
 router.route('/:id').get(getSingleUser).patch(updateUser).delete(deleteUser);
 
