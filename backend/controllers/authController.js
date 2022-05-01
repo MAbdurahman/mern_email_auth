@@ -1,10 +1,23 @@
 const User = require('../models/userModel');
 const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const AppErrorHandler = require('./../utils/appErrorHandler');
 const catchAsyncHandler = require('../utils/catchAsyncHandler');
 
+/*===============================================================
+         createAndSendToken function
+==================================================================*/
+const createAndSendToken = (user, statusCode, res) => {
+	const token = user.generateJSONWebToken();
+	res.status(statusCode).json({
+		status: 'Success',
+		token,
+		data: {
+			user,
+		},
+	});
+};
 
 /*===============================================================
 	signUpUser(POST) -> api/v1/users/sign-up
@@ -18,18 +31,7 @@ exports.signUpUser = catchAsyncHandler(async (req, res, next) => {
 		password,
 	});
 
-	const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-		expiresIn: process.env.JWT_LIFETIME,
-	});
-
-
-	res.status(201).json({
-		status: 'Success',
-		token,
-		data: {
-			user: newUser,
-		},
-	});
+	createAndSendToken(newUser, 201, res);
 });
 /*=====================================================================
    signInUser(POST) -> api/v1/users/sign-in
@@ -47,24 +49,19 @@ exports.signInUser = catchAsyncHandler(async (req, res, next) => {
 	if (!user) {
 		return next(new AppErrorHandler('Invalid email or password!', 401));
 	}
-   //**************** checks if password is correct ****************//
+	//**************** checks if password is correct ****************//
 	const isPasswordCorrect = await user.comparePasswords(password);
 
 	if (!isPasswordCorrect) {
 		return next(new AppErrorHandler('Invalid email or password', 401));
 	}
 
-	const token = user.generateJSONWebToken();
-	
-	res.status(200).json({
-		status: 'Success',
-		token
-	})
+	createAndSendToken(user, 200, res);
 });
 /*===========================================================================
    forgotPassword(POST) -> api/v1/users/forgot-password
 ==============================================================================*/
-exports.forgotPassword = catchAsyncHandler (async (req, res, next) => {
+exports.forgotPassword = catchAsyncHandler(async (req, res, next) => {
 	//**************** get user based on email in database ****************//
 	const user = await User.findOne({ email: req.body.email });
 	if (!user) {
@@ -85,22 +82,22 @@ exports.forgotPassword = catchAsyncHandler (async (req, res, next) => {
 		await sendEmail({
 			email: user.email,
 			subject: 'Email Auth Password Reset',
-			message: message
+			message: message,
 		});
 
 		res.status(200).json({
 			status: 'Success',
-			message: `Email sent to ${user.email}`
-		})
-
+			message: `Email sent to ${user.email}`,
+		});
 	} catch (error) {
 		user.resetPasswordToken = undefined;
 		user.resetPasswordExpires = undefined;
 		await user.save({ validateBeforeSave: false });
 
-		return next(new AppErrorHandler('Error sending email! Try again later.', 500));
+		return next(
+			new AppErrorHandler('Error sending email! Try again later.', 500)
+		);
 	}
-		
 });
 /*===========================================================================
    resetPassword(PATCH) -> api/v1/users/reset-password/:token
@@ -121,36 +118,48 @@ exports.resetPassword = catchAsyncHandler(async (req, res, next) => {
 	if (!user) {
 		return next(new AppErrorHandler('Invalid or Expired Token!', 400));
 	}
-	//**************** setup new password ****************//
+	//**************** set new password ****************//
 	user.password = req.body.password;
 	user.passwordResetToken = undefined;
 	user.passwordResetExpires = undefined;
 
 	await user.save();
 
-	//******** update changedPasswordAt property for the user ********//
-
-	//**************** sign in user, send JWT ****************//
-	const token = user.generateJSONWebToken();
-	//**************** send response ****************//
-	res.status(200).json({
-		status: 'Success',
-		token
-	});
+	/*=====================================================================
+         update changedPasswordAt property for the user is preformed
+			by the pre 'save' method in the userSchema
+===========================================================================*/
+	createAndSendToken(user, 200, res);
 });
 
 /*========================================================================
    updatePassword(PATCH) -> api/v1/users/update-my-password
 ===========================================================================*/
 exports.updatePassword = catchAsyncHandler(async (req, res, next) => {
-	//**************** send response ****************//
-	res.status(500).json({
-		status: 'error',
-		results: null,
-		message: 'This route has not been defined!',
-		data: {},
-	});
+	//********** get the user from the database collection **********//
+	const user = await User.findById(req.user.id).select('+password');
+
+	//***** check if enteredPassword is same as current password******//
+	if (!(await user.comparePasswords(req.body.passwordCurrent))) {
+		return next(
+			new AppErrorHandler('Current password entered incorrect!', 401)
+		);
+	}
+
+	/*=================================================================================
+         current password is correct, so update with new password
+	====================================================================================*/
+	user.password = req.body.password;
+
+	/*=================================================================================
+      NOTE: findByIdAndUpdate -> pre 'save' functions does not encrypt password
+	====================================================================================*/
+	await user.save();
+
+	//*********** get jsonwebtoken, to sign in, and send response ***********//
+	createAndSendToken(user, 200, res);
 });
+
 /*===============================================================
    resetPassword(POST) -> api/v1/auth/:id/:token
 ==================================================================*/

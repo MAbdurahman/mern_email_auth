@@ -7,7 +7,7 @@ const { promisify } = require('util');
 /*===============================================================
       checks authentication of user
 ==================================================================*/
-exports.isAuthenticated = catchAsyncHandler(async (req, res, next) => {
+exports.isAuthenticatedUser = catchAsyncHandler(async (req, res, next) => {
 	//*************** if there is a token, get it ****************//
 	let token;
 	if (
@@ -24,6 +24,7 @@ exports.isAuthenticated = catchAsyncHandler(async (req, res, next) => {
 	}
 
 	//**************** verify token ****************//
+	// const decoded =  await jwt.verify(token, process.env.JWT_SECRET);
 	const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
 	//**************** check if user exists ****************//
@@ -41,3 +42,22 @@ exports.isAuthenticated = catchAsyncHandler(async (req, res, next) => {
 	next();
    
 });
+
+/*===============================================================
+      checks authorization ['user', admin']
+==================================================================*/
+exports.isAuthorizedUser = (...roles) => {
+	return (req, res, next) => {
+		//**************** roles['admin', 'other']. role='user'****************//
+		if (!roles.includes(req.user.role)) {
+			return next(
+				new AppErrorHandler(
+					`Role (${req.user.role}) is not allowed to access this resource`,
+					403
+				)
+			);
+		}
+
+		next();
+	};
+};
